@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>创建vue实例</title>
+    </head>
+    <body>
+        <div id="app">
+            <span>消息:{{message + "!!"}}</span>
+            <br />
+            <span>消息:{{isOk ? 'ok' : 'notgood'}}</span>
+            <br />
+            <span>消息:{{ message.split('').reverse().join('')}}</span>
+            <img :src="url" alt="" />
+            <div v-html="html"></div>
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                message: "hello world",
+                isOk: false,
+                html: "<p>大家好</p>",
+                url: "./image/img1.jpg",
+            };
+        },
+    });
+</script>

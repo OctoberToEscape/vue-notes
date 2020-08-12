@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>vue指令</title>
+    </head>
+    <body>
+        <div id="app">
+            <!-- v-text , v-cloak , {{}} -->
+            <div v-cloak>{{msg}}</div>
+            <div v-text="msg"></div>
+            <!-- v-html -->
+            <div v-html="html"></div>
+            <!-- v-show -->
+            <div v-show="show">我隐藏了</div>
+            <div v-show="!show">我显示了</div>
+            <!-- v-if -->
+            <div v-if="flag == 1">flag:1</div>
+            <!-- v-else-if -->
+            <div v-else-if="flag == 2">flag:2</div>
+            <!-- v-else -->
+            <div v-else>flag:3</div>
+            <!-- v-for -->
+            <div v-for="(item,index) in list" :key="index.id">{{item}}</div>
+            <div v-for="item in list" v-text="item"></div>
+            <!-- v-on -->
+            <div v-on:click="onClick">点击1</div>
+            <div @click="onClick2($event)">点击2</div>
+            <!-- v-bind -->
+            <img v-bind:src="url" />
+            <img :src="url" />
+            <!-- v-model -->
+            <input type="text" v-model="inputInfo" />
+            <!-- v-pre -->
+            <div v-pre>{{msg}}</div>
+            <!-- v-once -->
+            <div v-once>{{msg}}</div>
+
+            <!-- 全局自定义指令 -->
+            <input type="text" v-public />
+            <!-- 局部自定义指令 -->
+            <input type="text" v-private />
+            <!-- 钩子函数 -->
+            <input type="text" v-model="text" v-demo="{color:'blue'}" />
+
+            <!-- $set() -->
+            <div>
+                <span style="color: blueviolet;" @click="handleSet">
+                    点我插入数据
+                </span>
+                <div v-cloak>{{info.age}}</div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script>
+    //全局指令
+    Vue.directive("public", (el) => {
+        el.value = "我是自定义指令";
+    });
+    Vue.directive("demo", {
+        //被绑定元素插入父节点时调用
+        /*
+         * @element:使用指令的元素
+         * @binding:使用指令的属性对象
+         * @vnode:整个 Vue 实例
+         */
+        inserted(element, binding, vnode) {
+            console.log("inserted");
+        },
+        //只调用一次，指令第一次绑定到元素时调用，
+        //用这个钩子函数可以定义一个在绑定时执行一次的初始化动作
+        //先于 inserted 触发
+        bind(element, binding, vnode) {
+            console.log("bind");
+            element.style.color = binding.value.color;
+        },
+        //被绑定元素所在的模板更新时调用，而不论绑定值是否变化
+        update(element, binding, vnode) {
+            console.log("update");
+            element.style.color = "#ccc";
+        },
+        //被绑定元素所在模板完成一次更新周期时调用。
+        componentUpdated(element, binding, vnode) {
+            console.log("componentUpdated");
+            setTimeout(() => {
+                element.style.color = "yellow";
+            }, 2000);
+        },
+    });
+
+    var app = new Vue({
+        el: "#app",
+        directives: {
+            //局部自定义指令
+            private(el) {
+                el.style.background = "red";
+            },
+        },
+        data() {
+            return {
+                show: false,
+                msg: "hello world",
+                html: "<p>大家好</p>",
+                flag: 2,
+                list: [1, 2, 3, 4, 5, 6],
+                url: "../TemplateSyntax/image/img1.jpg",
+                inputInfo: "我是表单信息",
+                text: "钩子函数",
+                info: {},
+            };
+        },
+        methods: {
+            onClick() {
+                console.log("点击1");
+            },
+            onClick2(e) {
+                console.log("点击2");
+                console.log(e);
+            },
+            handleSet() {
+                this.$set(this.info, "age", 23);
+            },
+        },
+    });
+</script>
