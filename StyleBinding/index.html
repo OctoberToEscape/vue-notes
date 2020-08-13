@@ -11,10 +11,18 @@
             .coexistence {
                 font-size: 24px;
             }
+            .arrClass {
+                background: chartreuse;
+            }
+            .class3 {
+                text-decoration: underline;
+            }
         </style>
     </head>
     <body>
         <div id="app">
+            <!-- 绑定class -->
+            <!-- 对象的形形式 -->
             <!-- 可以通过 v-bind:class 传一个对象实现动态改变 class 名 -->
             <div v-bind:class="{active :isActive}">我是active的</div>
             <div v-bind:class="{active :!isActive}">我是普通的</div>
@@ -31,6 +39,38 @@
             </div>
             <!-- 通过计算属性绑定class名 -->
             <div v-bind:class="computedClass">我是通过计算属性绑定的class</div>
+
+            <!-- ------------------------------------------------------------ -->
+            <!-- 数组的形式 -->
+            <div
+                v-bind:class="[class1,class2,'class3',isActive ? 'arrClass':'']"
+            >
+                我是数组形式
+            </div>
+            <!-- 数组包含对象 -->
+            <div
+                v-bind:class="[{active : isActive ,coexistence : !isActive} , 'class3']"
+            >
+                我是数组包含对象
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- 绑定style -->
+            <!-- 普通绑定 -->
+            <div
+                v-bind:style="{color : activeColor , fontSize : activeFont + 'px'}"
+            >
+                我是普通绑定style
+            </div>
+            <!-- 绑定一个对象 -->
+            <div v-bind:style="special">
+                我是绑定一个对象
+            </div>
+            <!-- 多重值 -->
+            <div :style="{ display: ['-webkit-box', '-ms-flexbox', 'flex'] }">
+                <div>123</div>
+                <div>456</div>
+            </div>
         </div>
     </body>
 </html>
@@ -40,6 +80,7 @@
         el: "#app",
         data() {
             return {
+                // 对象形式
                 isActive: true,
                 hasError: false,
                 classObject: {
@@ -47,6 +88,18 @@
                     coexistence: false,
                 },
                 hasNull: null,
+                // 数组形式
+                class1: "arrClass",
+                class2: "coexistence",
+                // ----------绑定样式-----------
+                //普通绑定
+                activeColor: "yellow",
+                activeFont: 36,
+                //绑定一个对象
+                special: {
+                    color: "blue",
+                    fontSize: "26px",
+                },
             };
         },
         computed: {
