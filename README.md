@@ -12,11 +12,11 @@ Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方�
 
 -   [vue 自定义指令](https://github.com/OctoberToEscape/vue-notes/tree/master/VueInstruction#自定义指令)
 
--   [样式绑定](https://github.com/OctoberToEscape/vue-notes/tree/master/StyleBinding)
+-   [class 与 style 绑定](https://github.com/OctoberToEscape/vue-notes/tree/master/StyleBinding)
 
 -   [vue 修饰符]()
 
--   [生命周期](https://github.com/OctoberToEscape/vue-notes/tree/master/LifeCycle)
+-   [vue 生命周期](https://github.com/OctoberToEscape/vue-notes/tree/master/LifeCycle)
 
 -   [MVVM 双向数据绑定原理](https://github.com/OctoberToEscape/vue-notes/tree/master/DataBinding)
 

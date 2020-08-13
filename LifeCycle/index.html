@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>vue生命周期</title>
+    </head>
+    <body>
+        <div id="app">
+            <input type="button" value="修改msg" @click="msg='No'" />
+            <h3 ref="message">{{ msg }}</h3>
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                msg: "ok",
+                timer: null,
+                num: 0,
+            };
+        },
+        methods: {
+            show() {
+                console.log("执行了方法show");
+            },
+        },
+        beforeCreate() {
+            console.log(
+                "------------------------------beforeCreate------------------------------"
+            );
+            console.log(this.msg); // undefined
+            console.log(this.$refs.message); // undefined
+            this.show(); // 报错 Error in beforeCreate hook: "TypeError: this.show is not a function"
+            console.log(
+                "beforeCreate,这个时候，数据和el还没有挂载呢，只是一个空壳"
+            );
+        },
+        created() {
+            console.log(
+                "------------------------------created------------------------------"
+            );
+            this.timer = setInterval(() => {}, 1000);
+            console.log(this.msg); // ok
+            console.log(this.$refs.message); // undefined
+            this.show(); // 执行了方法show
+            console.log(this.$el); // undefined
+            console.log(
+                "created,这个时候已经可以使用到数据，也可以更改数据,在这里更改数据不会触发updated函数"
+            );
+            console.log(
+                "在这里可以在渲染前倒数第二次更改数据的机会，不会触发其他的钩子函数，一般可以在这里做初始数据的获取"
+            );
+            console.log(
+                "接下来开始找实例或者组件对应的模板，编译模板为虚拟dom放入到render函数中准备渲染"
+            );
+        },
+        beforeMount() {
+            console.log(
+                "------------------------------beforeMount------------------------------"
+            );
+            console.log(this.$refs.message); // undefined
+            console.log(this.$el); // 如下
+            /*
+                <div id="app">
+                    <input type="button" value="修改msg" @click="msg='No'" />
+                    <h3 class="mssage">{{ msg }}</h3>
+                </div>
+            */
+            console.log(
+                "beforeMount：虚拟dom已经创建完成，马上就要渲染,在这里也可以更改数据，不会触发updated"
+            );
+            console.log(
+                "在这里可以在渲染前最后一次更改数据的机会，不会触发其他的钩子函数，一般可以在这里做初始数据的获取"
+            );
+            console.log("接下来开始render，渲染出真实dom");
+        },
+        mounted() {
+            console.log(
+                "------------------------------mounted------------------------------"
+            );
+            console.log(this.$refs.message); // 存在
+            console.log(
+                "mounted：此时，真实已经出现在页面中，数据、真实dom都已经处理好了,事件都已经挂载好了"
+            );
+            console.log(
+                "可以在这里操作真实dom等事情,比如el.addEventListener等;"
+            );
+        },
+        beforeUpdate() {
+            console.log(
+                "------------------------------beforeUpdate------------------------------"
+            );
+            console.log("界面上元素的内容：" + this.$refs.message.innerText); // ok
+            console.log("data 中的 msg 数据是：" + this.msg); // no
+            //当执行 beforeUpdate 的时候，页面中的显示的数据，还是旧的，此时 data 数据是最新的，页面尚未和 最新的数据保持同步
+            console.log(
+                "然后vue的虚拟dom机制会重新构建虚拟dom与上一次的虚拟dom树利用diff算法进行对比之后重新渲染"
+            );
+            console.log(
+                "beforeUpdate 的时候，页面中的显示的数据，还是旧的，此时 data 数据是最新的，页面尚未和 最新的数据保持同步"
+            );
+        },
+        updated() {
+            console.log(
+                "------------------------------updated------------------------------"
+            );
+            console.log("界面上元素的内容：" + this.$refs.message.innerText); // no
+            console.log("data 中的 msg 数据是：" + this.msg); // no
+            //updated 事件执行的时候，页面和 data 数据已经保持同步了，都是最新的
+            console.log("updated:数据已经更改完成，dom也重新render完成");
+        },
+        beforeDestroy() {
+            console.log(
+                "------------------------------beforeDestroy------------------------------"
+            );
+            console.log(
+                "beforeDestory:一般在这里善后:清除计时器、清除非指令绑定的事件等等..."
+            );
+            clearInterval(this.timer);
+            console.log(this.timer); // null
+        },
+        destroyed() {
+            console.log(
+                "------------------------------destroyed------------------------------"
+            );
+            console.log(
+                "destroyed:组件的数据绑定、监听...都去掉了,只剩下dom空壳，这里也可以善后"
+            );
+        },
+    });
+</script>
