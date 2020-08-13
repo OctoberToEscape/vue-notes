@@ -60,35 +60,35 @@
 
 -   点击事件中传递参数
 
-        ```html
-        <div id="app">
-            <button @click="onClickVal(val,$event)">
-                点击处理val
-            </button>
-            <span>{{val}}</span>
-        </div>
-        ```
+    ```html
+    <div id="app">
+        <button @click="onClickVal(val,$event)">
+            点击处理val
+        </button>
+        <span>{{val}}</span>
+    </div>
+    ```
 
-        ```js
-        var app = new Vue({
-            el: "#app",
-            data() {
-                return {
-                    val: 0,
-                };
+    ```js
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                val: 0,
+            };
+        },
+        methods: {
+            onClickVal(val, e) {
+                if (this.val < 5) this.val++;
+                else {
+                    this.val = "到头了";
+                    e.target.setAttribute("disabled", true);
+                }
             },
-            methods: {
-                onClickVal(val, e) {
-                    if (this.val < 5) this.val++;
-                    else {
-                        this.val = "到头了";
-                        e.target.setAttribute("disabled", true);
-                    }
-                },
-            },
-        });
-        ```
+        },
+    });
+    ```
 
-## watch
+## watch(监听)
 
-## computed
+## computed(计算属性)
