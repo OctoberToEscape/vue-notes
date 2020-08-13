@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>样式绑定和class绑定</title>
+        <style>
+            .active {
+                color: red;
+            }
+            .coexistence {
+                font-size: 24px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <!-- 可以通过 v-bind:class 传一个对象实现动态改变 class 名 -->
+            <div v-bind:class="{active :isActive}">我是active的</div>
+            <div v-bind:class="{active :!isActive}">我是普通的</div>
+            <!-- 与普通class名共存,定义模版内 -->
+            <div
+                class="static"
+                v-bind:class="{ active: isActive, 'coexistence': !hasError }"
+            >
+                我是定义在模版内共存的
+            </div>
+            <!-- 与普通class名共存,定义模版外 -->
+            <div class="static" v-bind:class="classObject">
+                我是定义在模版外共存的
+            </div>
+            <!-- 通过计算属性绑定class名 -->
+            <div v-bind:class="computedClass">我是通过计算属性绑定的class</div>
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                isActive: true,
+                hasError: false,
+                classObject: {
+                    active: true,
+                    coexistence: false,
+                },
+                hasNull: null,
+            };
+        },
+        computed: {
+            computedClass() {
+                return {
+                    active: this.isActive && !this.hasError,
+                    coexistence: this.hasNull === null,
+                };
+            },
+        },
+    });
+</script>
