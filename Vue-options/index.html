@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vue实例化后的方法</title>
+    </head>
+    <body>
+        <div id="app">
+            <!-- 普通事件处理 -->
+            <button @click="onClick">点击事件</button>
+            <span>{{num}}</span><br /><br />
+            <!-- 对event进行处理 -->
+            <button @click="onClicEvent($event)" num="1">点击处理event</button>
+            <span>{{num_event}}</span><br /><br />
+            <!-- 事件中传递参数 -->
+            <button @click="onClickVal(val,$event)">
+                点击处理val
+            </button>
+            <span>{{val}}</span><br /><br />
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                num: 0,
+                num_event: 0,
+                val: 0,
+            };
+        },
+        methods: {
+            onClick() {
+                console.log(this);
+                //Vue {_uid: 0, _isVue: true, $options: {…}, _renderProxy: Proxy, _self: Vue, …}
+                this.num++;
+            },
+            onClicEvent(e) {
+                var _num = e.target.getAttribute("num") * 1;
+                this.num_event += _num;
+                e.target.setAttribute("num", this.num_event);
+            },
+            onClickVal(val, e) {
+                if (this.val < 5) this.val++;
+                else {
+                    this.val = "到头了";
+                    e.target.setAttribute("disabled", true);
+                }
+            },
+        },
+    });
+</script>
