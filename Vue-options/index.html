@@ -18,6 +18,27 @@
                 点击处理val
             </button>
             <span>{{val}}</span><br /><br />
+            <!-- watch -->
+            <!-- 普通监听 -->
+            <input type="text" v-model="watchVal" />
+            <p>旧的值:{{ov}}</p>
+            <p>新的值:{{nv}}</p>
+            <!-- 监听到变化触发事件 -->
+            <input type="text" v-model="watchMethods" />
+            <!-- 深度监听 -->
+            <p>a的值:{{obj.a}}</p>
+            <button @click="obj.a = 2">改变a得值</button><br /><br />
+            <!-- immediate使用 -->
+            <button @click="show = true">点我出列表</button>
+            <div v-if="show">
+                <span
+                    style="background: #ccc; margin-right: 10px;"
+                    v-for="item in list"
+                    >{{item}}</span
+                >
+            </div>
+
+            <!-- 计算属性 -->
         </div>
     </body>
 </html>
@@ -30,7 +51,17 @@
                 num: 0,
                 num_event: 0,
                 val: 0,
+                watchVal: 1,
+                ov: null,
+                nv: null,
+                watchMethods: 1,
+                obj: { a: 1 },
+                list: [],
+                show: false,
             };
+        },
+        created() {
+            // this.init();
         },
         methods: {
             onClick() {
@@ -49,6 +80,40 @@
                     this.val = "到头了";
                     e.target.setAttribute("disabled", true);
                 }
+            },
+            alert() {
+                alert("监听到变化触发了我");
+            },
+            init() {
+                this.list = [1, 2, 3];
+            },
+        },
+        watch: {
+            watchVal(ov, nv) {
+                this.ov = ov;
+                this.nv = nv;
+            },
+            watchMethods(v) {
+                if (v || v === "") this.alert();
+            },
+            // 深度监听方法1,deep
+            obj: {
+                handler() {
+                    console.log("deep,a的值监听到变化了");
+                },
+                deep: true,
+            },
+            // 深度监听方法2
+            "obj.a": {
+                handler() {
+                    console.log("字符串形式监听,a的值监听到变化了");
+                },
+                //deep:true 此处的deep可以不写
+            },
+
+            list: {
+                handler: "init",
+                immediate: true,
             },
         },
     });
