@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>修饰符</title>
+    </head>
+    <body>
+        <div id="app">
+            <!-- 表单修饰符 -->
+            <!-- .lazy -->
+            <input type="text" v-model="value" />
+            <p>{{value}}</p>
+            <!-- .number -->
+            <input v-model.number="age" type="text" /> <br /><br />
+            <!-- .trim -->
+            <input type="text" v-model.trim="name" />
+            <p ref="trimp">{{name}}</p>
+            <button @click="getTrim">获取</button>
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                value: "",
+                age: "",
+                name: "",
+            };
+        },
+        methods: {
+            getTrim() {
+                console.log(this.$refs.trimp.innerHTML);
+            },
+        },
+        updated() {
+            console.log(typeof this.age);
+        },
+    });
+</script>

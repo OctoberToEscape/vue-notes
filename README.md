@@ -14,18 +14,20 @@ Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方�
 
 -   [class 与 style 绑定](https://github.com/OctoberToEscape/vue-notes/tree/master/StyleBinding)
 
--   [vue 修饰符]()
+-   [vue 修饰符](https://github.com/OctoberToEscape/vue-notes/tree/master/Modifier)
 
 -   [vue 实例化后的方法:methods,watch,computed](https://github.com/OctoberToEscape/vue-notes/tree/master/Vue-options)
 
 -   [vue 生命周期](https://github.com/OctoberToEscape/vue-notes/tree/master/LifeCycle)
 
--   [MVVM 双向数据绑定原理](https://github.com/OctoberToEscape/vue-notes/tree/master/DataBinding)
+-   [动画和过渡效果](https://github.com/OctoberToEscape/vue-notes/tree/master/VueAnimation)
+
+-   [vue 组件](https://github.com/OctoberToEscape/vue-notes/tree/master/Vue-Component)
 
 -   [vue 路由](https://github.com/OctoberToEscape/vue-notes/tree/master/VueRouter)
 
--   [动画和过渡效果](https://github.com/OctoberToEscape/vue-notes/tree/master/VueAnimation)
-
 -   [Vuex](https://github.com/OctoberToEscape/vue-notes/tree/master/Vuex)
+
+-   [MVVM 双向数据绑定原理](https://github.com/OctoberToEscape/vue-notes/tree/master/DataBinding)
 
 -   [Vue-Cli](https://github.com/OctoberToEscape/vue-notes/tree/master/Vue-Cli)
