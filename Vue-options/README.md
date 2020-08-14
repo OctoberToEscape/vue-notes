@@ -252,7 +252,7 @@ Vue 提供了对单个属性的监听器，当该属性发生改变的时候，�
             },
         },
         watch: {
-            list: {
+            show: {
                 handler: "init",
                 immediate: true,
             },
@@ -263,3 +263,157 @@ Vue 提供了对单个属性的监听器，当该属性发生改变的时候，�
 ---
 
 ## computed(计算属性)
+
+`computed` 主要是针对 `data` 的属性进行操作，`this` 的指针默认指向实例 `vue 实例`。模版中放入太多声明式逻辑会让模板臃肿尤其在页面大量使用复杂的逻辑表达式处理数据，会对页面的可维护性造成很大的影响，而 `computed` 的设计初衷也正是用于解决此类问题。
+
+```html
+<div id="app">
+    <!-- 计算属性写法 -->
+    <p>{{Person}}</p>
+    <!-- 常规写法 -->
+    <p>
+        我今年{{person.age}}, 名字叫做{{person.name}}, 性别{{person.gender ?
+        '男':'女'}}
+    </p>
+</div>
+```
+
+```js
+var app = new Vue({
+    el: "#app",
+    data() {
+        return {
+            person: {
+                name: "heqi",
+                age: 24,
+                gender: true,
+            },
+        };
+    },
+    computed: {
+        Person() {
+            return `我今年${this.person.age},名字叫做${this.person.name},性别${
+                this.person.gender ? "男" : "女"
+            }`;
+        },
+    },
+});
+
+// 两种结果为下图
+```
+
+![img1.png](https://i.loli.net/2020/08/14/vUeGIKqi5HEulcp.png)
+
+---
+
+## computed 的 get 和 set 属性
+
+### get()属性
+
+当我们在 V 层调用 {{Person}} 的时候会自动触发 Person.get(),上面的写法也可以这样写
+
+```js
+var app = new Vue({
+    el: "#app",
+    data() {
+        return {
+            person: {
+                name: "heqi",
+                age: 24,
+                gender: true,
+            },
+        };
+    },
+    computed: {
+        Person: {
+            get() {
+                return `我今年${this.person.age},名字叫做${
+                    this.person.name
+                },性别${this.person.gender ? "男" : "女"}`;
+            },
+        },
+    },
+});
+```
+
+### set()属性
+
+setter 的逻辑也是一样，当改变对应的属性时，会自动触发 set 方法
+
+```html
+<div id="app">
+    <!--调用了 fullName.get()-->
+    <p>{{fullName}}</p>
+    <input type="text" v-model="newName" />
+    <!--changeName 事件改变了 fullName 的值，所以会自动触发 fullName.set()-->
+    <input type="button" value="changeName" @click="changeName" />
+</div>
+```
+
+```js
+var app = new Vue({
+    el: "#app",
+    data() {
+        return {
+            firstName: "heqi",
+            lastName: "javascript",
+            newName: "",
+        };
+    },
+    methods: {
+        changeName() {
+            this.fullName = this.newName;
+        },
+    },
+    computed: {
+        fullName: {
+            get() {
+                return this.firstName + "." + this.lastName;
+            },
+            set(newValue) {
+                this.firstName = newValue;
+            },
+        },
+    },
+});
+```
+
+---
+
+## computed 和 watch 的区别
+
+-   computed 创建**新**的属性， watch 监听 data **已有**的属性
+-   compute 会产生依赖缓存
+-   当 watch 监听 computed 时，watch 在这种情况下无效，仅会触发 computed.setter
+
+    ```html
+    <div id="app">
+        <input type="text" v-model="a" />
+    </div>
+    ```
+
+    ```js
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {};
+        },
+        watch: {
+            a() {
+                //不会触发
+                console.log("监听到point改变了");
+            },
+        },
+        computed: {
+            a: {
+                get() {
+                    return "前端";
+                },
+                set(newValue) {
+                    //会触发这里
+                    console.log("set val", newValue);
+                },
+            },
+        },
+    });
+    ```

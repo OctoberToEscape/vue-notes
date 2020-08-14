@@ -37,8 +37,28 @@
                     >{{item}}</span
                 >
             </div>
-
+            <!-- computed -->
             <!-- 计算属性 -->
+            <p>{{Person}}</p>
+            <!-- 常规写法 -->
+            <p>
+                我今年{{person.age}},名字叫做{{person.name}},性别{{person.gender
+                ? '男' : '女'}}
+            </p>
+
+            <!-- set讲解 -->
+            <!--调用了 fullName.get()-->
+            <p>{{fullName}}</p>
+            <input type="text" v-model="newName" />
+            <!--changeName 事件改变了 fullName 的值，所以会自动触发 fullName.set()-->
+            <input
+                type="button"
+                value="changeName"
+                @click="changeName"
+            /><br /><br />
+
+            <!-- watch和computed的区别 -->
+            <input type="text" v-model="a" />
         </div>
     </body>
 </html>
@@ -58,6 +78,16 @@
                 obj: { a: 1 },
                 list: [],
                 show: false,
+                // --------
+                person: {
+                    name: "heqi",
+                    age: 24,
+                    gender: true,
+                },
+                // -------
+                firstName: "heqi",
+                lastName: "javascript",
+                newName: "",
             };
         },
         created() {
@@ -87,6 +117,14 @@
             init() {
                 this.list = [1, 2, 3];
             },
+
+            changeName() {
+                this.fullName = this.newName;
+            },
+
+            changePoint() {
+                this.point = "后端";
+            },
         },
         watch: {
             watchVal(ov, nv) {
@@ -111,9 +149,49 @@
                 //deep:true 此处的deep可以不写
             },
 
-            list: {
+            show: {
                 handler: "init",
                 immediate: true,
+            },
+
+            a() {
+                //不会被触发
+                console.log("触发watch");
+            },
+        },
+        computed: {
+            Person() {
+                return `我今年${this.person.age},名字叫做${
+                    this.person.name
+                },性别${this.person.gender ? "男" : "女"}`;
+            },
+            // get写法如下
+
+            // Person: {
+            //     get() {
+            //         return `我今年${this.person.age},名字叫做${
+            //             this.person.name
+            //         },性别${this.person.gender ? "男" : "女"}`;
+            //     },
+            // },
+
+            fullName: {
+                get() {
+                    return this.firstName + "." + this.lastName;
+                },
+                set(newValue) {
+                    this.firstName = newValue;
+                },
+            },
+
+            a: {
+                get() {
+                    return "前端";
+                },
+                set(newVal) {
+                    //会触发此项
+                    console.log("set val ", newVal);
+                },
             },
         },
     });
