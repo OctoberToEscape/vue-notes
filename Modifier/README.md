@@ -141,7 +141,7 @@
 <!-- 左⬅️ -->
 <input @keyup.left="left" />
 
-<!-- 右 -->
+<!-- 右➡️ -->
 <input @keyup.right="right" />
 ```
 

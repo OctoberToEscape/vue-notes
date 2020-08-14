@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            * {
+                list-style: none;
+            }
+            li {
+                width: 300px;
+                margin-bottom: 5px;
+                padding: 10px 20px;
+                background-color: #ccc;
+            }
+
+            .list-enter {
+                opacity: 0;
+                transform: translateX(300px);
+            }
+            .list-enter-active {
+                transition: all 0.5s;
+            }
+
+            .list-leave-active {
+                transition: all 0.5s;
+                opacity: 0;
+                transform: translateX(-300px);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <p>
+                <input type="button" value="AddItem" @click="addItem" />
+                <input type="button" value="RemoveItem" @click="removeItem" />
+            </p>
+            <transition-group tag="ul" name="list">
+                <li v-for="(item, index) in items" :key="item">
+                    Item {{index}}
+                </li>
+            </transition-group>
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            items: [1, 2, 3],
+        },
+        methods: {
+            randomIndex() {
+                return parseInt(this.items.length * Math.random());
+            },
+            addItem() {
+                this.items.splice(this.randomIndex(), 0, this.items.length + 1);
+            },
+            removeItem() {
+                this.items.splice(this.randomIndex(), 1);
+            },
+        },
+    });
+</script>

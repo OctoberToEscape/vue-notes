@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>动画与过渡</title>
+        <style>
+            /*初始状态*/
+            .fade-enter {
+                opacity: 0;
+            }
+            /*已经准备就绪*/
+            .fade-enter-active {
+                transition: all 0.5s;
+            }
+            /*已经消失*/
+            .fade-leave-active {
+                opacity: 0;
+                transition: all 0.5s;
+            }
+            /* ----------- */
+            .animation-enter-active {
+                animation: animation-in 1s;
+            }
+
+            .animation-leave-active {
+                animation: animation-out 1s;
+            }
+            @keyframes animation-in {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes animation-out {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+            /* ------------ */
+            .first-enter {
+                opacity: 0;
+            }
+            .first-enter-active {
+                transition: all 3s;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <!-- css过渡属性 -->
+            <button @click="show1 = !show1">{{show1 ? "隐藏" : '显示'}}</button>
+            <br />
+            <transition name="fade">
+                <p v-show="show1">我是CSS过渡属性</p>
+            </transition>
+
+            <!-- CSS动画 -->
+            <button @click="show2 = !show2">{{show2 ? "隐藏" : '显示'}}</button>
+            <br />
+            <transition name="animation">
+                <p v-if="show2">我是CSS动画属性</p>
+            </transition>
+
+            <!-- 初次渲染的过渡 -->
+            <transition
+                appear
+                appear-class="first-enter"
+                appear-active-class="first-enter-active"
+            >
+                <p>我是初次渲染过渡</p>
+            </transition>
+
+            <!-- 多个元素过渡效果 -->
+            <fieldset>
+                <legend><h3>mode = in-out</h3></legend>
+                <div>
+                    <button @click="black = !black">
+                        {{black ? "write" : 'black'}}
+                    </button>
+                    <br />
+                    <transition name="fade" mode="in-out">
+                        <p
+                            v-if="black"
+                            style="background: #000; color: #fff;"
+                            key="black"
+                        >
+                            black
+                        </p>
+                        <p v-else key="write">write</p>
+                    </transition>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend><h3>mode = out-in</h3></legend>
+                <div>
+                    <button @click="flag = flag == 1 ? 2 : flag == 2 ? 3 : 1">
+                        {{flag == 1 ? 'green' : flag == 2 ? 'yellw' : 'red'}}
+                    </button>
+                    <br />
+                    <transition name="fade" mode="out-in">
+                        <p v-if="flag == 1" style="background: red;" key="red">
+                            红
+                        </p>
+                        <p
+                            v-else-if="flag == 2"
+                            style="background: green;"
+                            key="green"
+                        >
+                            绿
+                        </p>
+                        <p v-else style="background: yellow;" key="yellow">
+                            黄
+                        </p>
+                    </transition>
+                </div>
+            </fieldset>
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                show1: true,
+                show2: true,
+                black: true,
+                flag: 1,
+            };
+        },
+    });
+</script>
