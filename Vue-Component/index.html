@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>组件</title>
+    </head>
+    <body>
+        <div id="app">
+            <!-- 全局组件-->
+            <component-public />
+        </div>
+        <div id="element">
+            <!-- 局部组件 -->
+            <component-private />
+        </div>
+        <!-- 通过Vue.extend()实现组件注册 -->
+        <div id="extend"></div>
+
+        <!-- 讲解讲解 vm.$mount() -->
+        <div id="mount"></div>
+
+        <!-- 每个组件都有自己独立的作用域 -->
+        <div id="alone">
+            <p>{{count}}</p>
+            <my-component />
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script>
+    // 全局组件的声明
+    Vue.component("component-public", {
+        template: "<h1>全局组件</h1>",
+    });
+
+    var app = new Vue({
+        el: "#app",
+    });
+
+    var ele = new Vue({
+        el: "#element",
+        //局部组件
+        components: {
+            "component-private": {
+                template: "<h2>我是局部组件</h2>",
+            },
+        },
+    });
+
+    // Vue.extend()实现注册组件
+    var ComponentExtend = Vue.extend({
+        template: "<h3>{{Value}}</h3>",
+        data() {
+            return {
+                first: "我是通过",
+                function: "Vue.extend()",
+                last: "实现的组件注册",
+            };
+        },
+        computed: {
+            Value() {
+                return this.first + this.function + this.last;
+            },
+        },
+    });
+    new ComponentExtend().$mount("#extend");
+
+    // 讲解vm.$mount()
+    var Mount = Vue.extend({
+        template: "<p>讲解vm.$mount()</p>",
+    });
+    // new Mount().$mount("#mount");  等同于
+    // new Mount({ el: "#mount" });
+
+    // 或者在或者，在文档之外渲染并且随后挂载
+    var component = new Mount().$mount();
+    document.getElementById("mount").appendChild(component.$el);
+
+    // 每个组件都有自己独立的作用域
+    var alone = new Vue({
+        el: "#alone",
+        data() {
+            return {
+                count: 10,
+            };
+        },
+        components: {
+            "my-component": {
+                template: '<button v-on:click="onClick">{{ count }}</button>',
+                data() {
+                    return {
+                        count: 0,
+                    };
+                },
+                methods: {
+                    onClick() {
+                        this.count++;
+                    },
+                },
+            },
+        },
+    });
+</script>
