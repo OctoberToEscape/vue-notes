@@ -365,4 +365,48 @@ var validation = new Vue({
 
 ---
 
-### 组件的自定义事件,以及向父亲传值
+### 组件的自定义事件
+
+`prop` 是父传子，子船父通过`$emit()`
+
+```html
+<div id="emit">
+    <p>{{num}}</p>
+    <!-- @handle 表示 子组件传递出去的事件名 -->
+    <child v-on:handle="onClick"></child>
+</div>
+```
+
+```js
+var emit = new Vue({
+    el: "#emit",
+    data() {
+        return {
+            num: 0,
+        };
+    },
+    methods: {
+        onClick(val) {
+            console.log(val); //打印子组件通过$emit()传递过来的值
+            if (val > 3) this.num++;
+        },
+    },
+    components: {
+        child: {
+            template: `<button @click="_onClick">点击传递事件-{{total}}</button>`,
+            data() {
+                return {
+                    total: 0,
+                };
+            },
+            methods: {
+                _onClick() {
+                    this.total++;
+                    // 子组件通过$emit("传递出去的事件名"，传递的数值)
+                    this.$emit("handle", this.total);
+                },
+            },
+        },
+    },
+});
+```

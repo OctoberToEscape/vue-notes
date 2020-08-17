@@ -59,6 +59,12 @@
                 :prop-E="propEs"
             />
         </div>
+
+        <!-- $emit()子传父 -->
+        <div id="emit">
+            <p>{{num}}</p>
+            <child v-on:handle="onClick"></child>
+        </div>
     </body>
 </html>
 <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
@@ -226,6 +232,38 @@
                         default() {
                             return { message: "hello" };
                         },
+                    },
+                },
+            },
+        },
+    });
+
+    //$emit()子传父
+    var emit = new Vue({
+        el: "#emit",
+        data() {
+            return {
+                num: 0,
+            };
+        },
+        methods: {
+            onClick(val) {
+                console.log(val);
+                if (val > 3) this.num++;
+            },
+        },
+        components: {
+            child: {
+                template: `<button @click="_onClick">点击传递事件-{{total}}</button>`,
+                data() {
+                    return {
+                        total: 0,
+                    };
+                },
+                methods: {
+                    _onClick() {
+                        this.total++;
+                        this.$emit("handle", this.total);
                     },
                 },
             },
