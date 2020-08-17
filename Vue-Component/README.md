@@ -240,3 +240,129 @@ var dynamic = new Vue({
 ## Prop 实现数据通信
 
 在 Vue 中，父子组件的关系可以总结为 `prop` 向下传递，事件向上传递。父组件通过 `prop` 给子组件下发数据，子组件通过`事件`给父组件发送消息。
+
+### 父传子
+
+```html
+<div id="prop">
+    <!-- 父传子的时候通过下方方式传递，动态属性前加： -->
+    <child title="组件属性" :msg="msg" />
+</div>
+```
+
+```js
+var prop = new Vue({
+    el: "#prop",
+    data() {
+        return {
+            msg: "-动态属性",
+        };
+    },
+    components: {
+        child: {
+            template: "<h1>{{title}}{{msg}}</h1>",
+            // 声明 props
+            props: ["title", "msg"],
+        },
+    },
+});
+```
+
+最终渲染结果
+
+```html
+<div id="prop">
+    <h1>组件属性-动态属性</h1>
+</div>
+```
+
+### prop 验证和默认值
+
+我们可以为组件的 `prop` 指定验证规则。如果传入的数据不符合要求，Vue 会发出警告。
+要指定验证规则，需要用**对象**的形式来定义。
+
+```html
+<div id="validation">
+    <child
+        :prop-A="propAs"
+        :prop-B="propBs"
+        :prop-C="propCs"
+        :prop-E="propEs"
+    />
+</div>
+```
+
+```js
+var validation = new Vue({
+    el: "#validation",
+    data() {
+        return {
+            propAs: 12,
+            propBs: "我是propB",
+            propCs: "我是必须传递的",
+            propDs: 12,
+            propEs: { obj: "is obj" },
+        };
+    },
+    components: {
+        child: {
+            template: `<div>
+                            <p>{{propA}}</p>
+                            <p>{{propB}}</p>
+                            <p>{{propC}}</p>
+                            <p>{{propD}}</p>
+                            <p>{{propE}}</p>
+                    </div>`,
+            props: {
+                // 基础类型检测 (`null` 指允许任何类型)
+                propA: Number,
+                // 可能是多种类型
+                propB: [String, Number],
+                // 必传且是字符串
+                propC: {
+                    type: String,
+                    required: true,
+                },
+                // 数值且有默认值
+                propD: {
+                    type: Number,
+                    default: 100,
+                },
+                // 数组/对象的默认值应当由一个工厂函数返回
+                propE: {
+                    type: Object,
+                    default() {
+                        return { message: "hello" };
+                    },
+                },
+            },
+        },
+    },
+});
+```
+
+输出结果
+
+```html
+<div id="validation">
+    <div>
+        <p>12</p>
+        <p>我是propB</p>
+        <p>我是必须传递的</p>
+        <p>100</p>
+        <p>{ "obj": "is obj" }</p>
+    </div>
+</div>
+```
+
+类型错误的报错如下图
+
+![img2.png](https://i.loli.net/2020/08/17/ofInd43vEYKh5eF.png)
+
+必传项不传的报错如下图
+
+![img3.png](https://i.loli.net/2020/08/17/qtGD26LrCE1iaBu.png)
+
+---
+
+### 组件的自定义事件,以及向父亲传值
