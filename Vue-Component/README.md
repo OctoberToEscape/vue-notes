@@ -410,3 +410,89 @@ var emit = new Vue({
     },
 });
 ```
+
+## 使用插槽 slot 分发内容
+
+Vue 组件默认是覆盖渲染，为了解决这一问题，Vue 提出了 slot 分发内容
+
+### 单个插槽
+
+```html
+<div id="slot">
+    <child>
+        <h1>java</h1>
+        <h1>php</h1>
+    </child>
+</div>
+```
+
+```js
+var slot = new Vue({
+    el: "#slot",
+    components: {
+        child: {
+            template: `<div>
+                    <h1>javascript</h1>
+                    <slot></slot>
+                </div>`,
+        },
+    },
+});
+```
+
+最终渲染结果
+
+```html
+<div>
+    <h1>javascript</h1>
+    <!-- 
+        如果在组件定义的 template 当中没有 <slot></slot>，那么下面两个 h1 标签将不会存在
+        换句话说就是 <slot></slot> = <h1>java</h1><h1>php</h1>
+        <slot></slot>可以放到 <h1>javascript</h1> 上面进行位置调换
+     -->
+    <h1>java</h1>
+    <h1>php</h1>
+</div>
+```
+
+### 具名插槽
+
+```html
+<div id="nameslot">
+    <child>
+        <p>123</p>
+        <p>456</p>
+        <p slot="slotname">具名插槽</p>
+    </child>
+</div>
+```
+
+```js
+var nameSlot = new Vue({
+    el: "#nameslot",
+    components: {
+        child: {
+            template: ` <div>
+                            <slot name="slotname"></slot>
+                            <h1>Tom</h1>
+                            <slot></slot>
+                        </div>`,
+        },
+    },
+});
+```
+
+最终渲染结果
+
+```html
+<div>
+    <!--<slot name="slotname"></slot> = <p slot="slotname">具名插槽</h1>-->
+    <p>具名插槽</p>
+    <h1>Tom</h1>
+    <!-- 其它没有 slot 属性的子元素将全部分发到 <slot></slot> 标签 -->
+    <p>123</p>
+    <p>456</p>
+</div>
+```
+
+### 作用域插槽
