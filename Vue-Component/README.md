@@ -367,7 +367,7 @@ var validation = new Vue({
 
 ### 组件的自定义事件
 
-`prop` 是父传子，子船父通过`$emit()`
+`prop` 是父传子，子传父通过`$emit()`
 
 ```html
 <div id="emit">
@@ -486,7 +486,7 @@ var nameSlot = new Vue({
 
 ```html
 <div>
-    <!--<slot name="slotname"></slot> = <p slot="slotname">具名插槽</h1>-->
+    <!--<slot name="slotname"></slot> = <p slot="slotname">具名插槽</p>-->
     <p>具名插槽</p>
     <h1>Tom</h1>
     <!-- 其它没有 slot 属性的子元素将全部分发到 <slot></slot> 标签 -->
@@ -496,3 +496,5 @@ var nameSlot = new Vue({
 ```
 
 ### 作用域插槽
+
+作用域插槽是一种特殊类型的插槽，用作一个 (能被传递数据的) 可重用模板，来代替已经渲染好的元素。在子组件中，只需将数据传递到插槽，就像你将 prop 传递给组件一样：
