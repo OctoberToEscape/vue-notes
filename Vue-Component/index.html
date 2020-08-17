@@ -25,6 +25,23 @@
             <p>{{count}}</p>
             <my-component />
         </div>
+        <br />
+
+        <!-- 特殊的HTML结构中需要使用到is -->
+        <div id="special">
+            <select>
+                <!-- <privateOption /> -->
+                <option is="privateOption"></option>
+            </select>
+        </div>
+        <br />
+
+        <!-- 动态组件 -->
+        <div id="dynamic">
+            <button @click="change">{{title}}</button>
+            <br />
+            <p :is="title"></p>
+        </div>
     </body>
 </html>
 <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
@@ -98,6 +115,37 @@
                         this.count++;
                     },
                 },
+            },
+        },
+    });
+
+    //特殊的HTML需要使用到is
+    var special = new Vue({
+        el: "#special",
+        components: {
+            privateOption: {
+                template: "<option>我是特殊的HTML</option>",
+            },
+        },
+    });
+
+    //动态组件
+    var dynamic = new Vue({
+        el: "#dynamic",
+        data: {
+            title: "red",
+        },
+        methods: {
+            change() {
+                this.title = this.title == "red" ? "green" : "red";
+            },
+        },
+        components: {
+            red: {
+                template: "<h1>Red</h1>",
+            },
+            green: {
+                template: "<h2>Green</h2>",
             },
         },
     });
