@@ -84,6 +84,26 @@
         </div>
 
         <!-- slot插槽 - 作用域插槽 -->
+        <div id="scope">
+            <child>
+                <template v-slot="slotProps">
+                    <h1>{{slotProps.list.text}}</h1>
+                </template>
+                <template v-slot:list="nameSlot">
+                    <h2>{{nameSlot.list.id}}</h2>
+                </template>
+            </child>
+        </div>
+
+        <!-- slot插槽 - 解构插槽 -->
+        <div id="deconstruction">
+            <child>
+                <!-- 解构 v-slot="{子组件定义的名字}"" -->
+                <template v-slot="{ users : person }">
+                    <h1>{{person.name}}</h1>
+                </template>
+            </child>
+        </div>
     </body>
 </html>
 <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
@@ -224,12 +244,12 @@
         components: {
             child: {
                 template: `<div>
-                                <p>{{propA}}</p>
-                                <p>{{propB}}</p>
-                                <p>{{propC}}</p>
-                                <p>{{propD}}</p>
-                                <p>{{propE}}</p>
-                        </div>`,
+                                    <p>{{propA}}</p>
+                                    <p>{{propB}}</p>
+                                    <p>{{propC}}</p>
+                                    <p>{{propD}}</p>
+                                    <p>{{propE}}</p>
+                            </div>`,
                 props: {
                     // 基础类型检测 (`null` 指允许任何类型)
                     propA: Number,
@@ -295,9 +315,9 @@
         components: {
             child: {
                 template: `<div>
-                    <h1>javascript</h1>
-                    <slot></slot>
-                </div>`,
+                        <h1>javascript</h1>
+                        <slot></slot>
+                    </div>`,
             },
         },
     });
@@ -308,13 +328,65 @@
         components: {
             child: {
                 template: ` <div>
-                                <slot name="slotname"></slot>
-                                <h1>Tom</h1>
-                                <slot></slot>
-                            </div>`,
+                                    <slot name="slotname"></slot>
+                                    <h1>Tom</h1>
+                                    <slot></slot>
+                                </div>`,
             },
         },
     });
 
     // slot插槽 - 作用域插槽
+    var scope = new Vue({
+        el: "#scope",
+        components: {
+            child: {
+                // 绑定到元素上的特性（v-bind:list="list"）被称为插槽 prop。现在在父级作用域中，我们可以使用带值的 v-slot 来定义我们提供的插槽 prop 的名字。
+                template: `<ul>
+                            <li v-for="(item,index) in list" :key="index.id">
+                                <slot v-bind:list="item"></slot>
+                                <slot name="list" v-bind:list="item"></slot>
+                            </li>
+                        </ul>`,
+                data() {
+                    return {
+                        list: [
+                            {
+                                id: 1,
+                                text: "javascript",
+                            },
+                            {
+                                id: 2,
+                                text: "php",
+                            },
+                            {
+                                id: 3,
+                                text: "java",
+                            },
+                        ],
+                    };
+                },
+            },
+        },
+    });
+
+    // slot插槽 - 解构插槽
+    var deconstruction = new Vue({
+        el: "#deconstruction",
+        components: {
+            child: {
+                template: `<div>
+                    <slot v-bind:users="user"></slot>
+                </div>`,
+                data() {
+                    return {
+                        user: {
+                            name: "heqi",
+                            age: 24,
+                        },
+                    };
+                },
+            },
+        },
+    });
 </script>

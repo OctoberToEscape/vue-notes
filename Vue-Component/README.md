@@ -497,4 +497,191 @@ var nameSlot = new Vue({
 
 ### 作用域插槽
 
-作用域插槽是一种特殊类型的插槽，用作一个 (能被传递数据的) 可重用模板，来代替已经渲染好的元素。在子组件中，只需将数据传递到插槽，就像你将 prop 传递给组件一样：
+作用域插槽是一种特殊类型的插槽，用作一个 (能被传递数据的) 可重用模板，来代替已经渲染好的元素。在子组件中，只需将数据传递到插槽，就像你将 prop 传递给组件一样，说白了就是**获取本组件的数据！**
+
+```html
+<!-- 父组件 -->
+<div id="scope">
+    <child>
+        <!-- 
+            语法：v-slot:default="随意取的名字" ，default可省略，简写为v-slot="随意取的名字" -->
+        <template v-slot="slotProps">
+            <h1>{{slotProps.list.text}}</h1>
+        </template>
+    </child>
+</div>
+```
+
+```js
+var scope = new Vue({
+    el: "#scope",
+    components: {
+        child: {
+            // 绑定到元素上的特性（v-bind:list="item"）被称为插槽 prop。现在在父级作用域中，我们可以使用带值的 v-slot 来定义我们提供的插槽 prop 的名字。
+
+            // 绑定语法：v-bind:随意起的名字="需要传递的子组件数据"
+
+            template: `<ul>
+                            <li v-for="(item,index) in list" :key="index.id">
+                                <slot v-bind:list="item"></slot>
+                            </li>
+                        </ul>`,
+            data() {
+                return {
+                    list: [
+                        {
+                            id: 1,
+                            text: "javascript",
+                        },
+                        {
+                            id: 2,
+                            text: "php",
+                        },
+                        {
+                            id: 3,
+                            text: "java",
+                        },
+                    ],
+                };
+            },
+        },
+    },
+});
+```
+
+最终渲染结果
+
+```html
+<ul>
+    <li><h1>javascript</h1></li>
+    <li><h1>php</h1></li>
+    <li><h1>java</h1></li>
+</ul>
+```
+
+### 具名插槽的作用域插槽
+
+与匿名插槽同理，只需要把 default 替换成插槽的 name 值即可。
+
+```html
+<!-- 父组件 -->
+<div id="scope">
+    <child>
+        <!-- 
+            语法：v-slot:具名的名字="随意取的名字" -->
+        <template v-slot:list="nameProps">
+            <h1>{{nameProps.list.id}}</h1>
+        </template>
+    </child>
+</div>
+```
+
+```js
+var scope = new Vue({
+    el: "#scope",
+    components: {
+        child: {
+            template: `<ul>
+                            <li v-for="(item,index) in list" :key="index.id">
+                                <slot name="list" v-bind:list="item"></slot>
+                            </li>
+                        </ul>`,
+            data() {
+                return {
+                    list: [
+                        {
+                            id: 1,
+                            text: "javascript",
+                        },
+                        {
+                            id: 2,
+                            text: "php",
+                        },
+                        {
+                            id: 3,
+                            text: "java",
+                        },
+                    ],
+                };
+            },
+        },
+    },
+});
+```
+
+最终渲染结果
+
+```html
+<ul>
+    <li><h1>1</h1></li>
+    <li><h1>2</h1></li>
+    <li><h1>3</h1></li>
+</ul>
+```
+
+### 解构插槽 Prop
+
+v-slot 的值实际上可以是任何能够作为函数定义中的参数的 JavaScript 表达式。所以在支持的环境下 (单文件组件或现代浏览器)，你也可以使用 ES2015 解构来传入具体的插槽 prop。
+
+```
+语法：v-slot="{ xxx }"
+```
+
+我们来看一下结构插槽
+
+```html
+<div id="deconstruction">
+    <child>
+        <!-- 解构 v-slot="{子组件定义的名字}"" -->
+        <template v-slot="{ users }">
+            <h1>{{users.name}}</h1>
+        </template>
+    </child>
+</div>
+```
+
+```js
+var deconstruction = new Vue({
+    el: "#deconstruction",
+    components: {
+        child: {
+            template: `<div>
+                    <slot v-bind:users="user"></slot>
+                </div>`,
+            data() {
+                return {
+                    user: {
+                        name: "heqi",
+                        age: 24,
+                    },
+                };
+            },
+        },
+    },
+});
+```
+
+最终渲染结果
+
+```html
+<div><h1>heqi</h1></div>
+```
+
+相对于传统的作用域插槽，优势在于父组件不用重新自定义名称在通过对象的方式点出来，则直接沿用子组件的名称选择其键名
+
+我们也可以给重命名
+
+```html
+<div id="deconstruction">
+    <child>
+        <!-- 解构 v-slot="{子组件定义的名字 : 需要重命名的名字}"" -->
+        <template v-slot="{ users : person }">
+            <!-- 如果用之前的名字会报错如下图，需要改成重命名后的名字 -->
+            <!-- <h1>{{users.name}}</h1> -->
+            <h1>{{person.name}}</h1>
+        </template>
+    </child>
+</div>
+```
+
+![img4.png](https://i.loli.net/2020/08/18/aTYoSXczbZ5qx3L.png)
