@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>vue路由</title>
+    </head>
+    <body>
+        <div id="app">
+            <p>
+                <router-link to="/">主页</router-link>
+                <router-link to="/about">关于我们</router-link>
+                <router-link to="/mine">我的</router-link>
+            </p>
+
+            <router-view style="margin-top: 20px;"></router-view>
+        </div>
+    </body>
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue-router/3.4.3/vue-router.min.js"></script>
+<script>
+    // 定义组件
+    var Main = Vue.extend({
+        template: `<div style="width:100px;height:50px;background:'green'">
+            <span>{{title}}</span>
+        </div>`,
+        data() {
+            return {
+                title: "主页",
+            };
+        },
+    });
+    var About = Vue.extend({
+        template: `<div style="width:100px;height:50px;background:'red'">
+            <span>{{title}}</span>
+        </div>`,
+        data() {
+            return {
+                title: "关于我们",
+            };
+        },
+    });
+    var Mine = Vue.extend({
+        template: `<div style="width:100px;height:50px;background:'yellow'">
+            <span>{{title}}</span>
+        </div>`,
+        data() {
+            return {
+                title: "我的",
+            };
+        },
+    });
+
+    // var a = { template: "<p>主页</p>" };
+    // var b = { template: "<p>关于</p>" };
+    // var c = { template: "<p>主页</p>" };
+
+    // 声明路由规则
+    const routes = [
+        { path: "/", component: Main },
+        { path: "/about", component: About },
+        { path: "/mine", component: Mine },
+    ];
+
+    const router = new VueRouter({
+        routes,
+    });
+
+    var app = new Vue({
+        router,
+    }).$mount("#app");
+</script>
