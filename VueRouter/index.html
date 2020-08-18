@@ -4,25 +4,37 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>vue路由</title>
+        <style>
+            a {
+                cursor: pointer;
+            }
+        </style>
     </head>
     <body>
         <div id="app">
             <p>
                 <router-link to="/">主页</router-link>
-                <router-link to="/about">关于我们</router-link>
-                <router-link to="/mine">我的</router-link>
+                <!-- params传参数 -->
+                <router-link to="/about/1">关于我们</router-link>
+                <!-- query传递参数 -->
+                <router-link :to="{path:'/mine',query:{name:'heqi',age:22}}"
+                    >我的</router-link
+                >
+
+                <!-- 编程式导航 -->
+                <span @click="onClick">编程式跳转</span>
             </p>
 
             <router-view style="margin-top: 20px;"></router-view>
         </div>
     </body>
 </html>
-<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/vue-router/3.4.3/vue-router.min.js"></script>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
 <script>
     // 定义组件
     var Main = Vue.extend({
-        template: `<div style="width:100px;height:50px;background:'green'">
+        template: `<div style="width:100px;height:50px;">
             <span>{{title}}</span>
         </div>`,
         data() {
@@ -32,8 +44,9 @@
         },
     });
     var About = Vue.extend({
-        template: `<div style="width:100px;height:50px;background:'red'">
-            <span>{{title}}</span>
+        // 利用$route.params.xxx拿到参数
+        template: `<div style="width:100px;height:50px;">
+            <span>{{title}}{{$route.params.id}}</span>
         </div>`,
         data() {
             return {
@@ -42,8 +55,9 @@
         },
     });
     var Mine = Vue.extend({
-        template: `<div style="width:100px;height:50px;background:'yellow'">
-            <span>{{title}}</span>
+        // 利用$route.query.xxx拿到参数
+        template: `<div style="width:100px;height:50px;">
+            <span>{{title}}{{$route.query.name}}{{$route.query.age}}</span>
         </div>`,
         data() {
             return {
@@ -51,23 +65,42 @@
             };
         },
     });
-
-    // var a = { template: "<p>主页</p>" };
-    // var b = { template: "<p>关于</p>" };
-    // var c = { template: "<p>主页</p>" };
+    var JavaScript = Vue.extend({
+        template: `<div style="width:100px;height:50px;">
+            <span>{{title}}{{$route.query.name}}</span>
+        </div>`,
+        data() {
+            return {
+                title: "编程式导航",
+            };
+        },
+    });
 
     // 声明路由规则
     const routes = [
         { path: "/", component: Main },
-        { path: "/about", component: About },
+        { path: "/about/:id", component: About },
         { path: "/mine", component: Mine },
+        { path: "/js", component: JavaScript },
     ];
 
+    // 创建VueRouter实例
     const router = new VueRouter({
         routes,
     });
 
+    // 将创建的VueRouter实例传入创建的Vue实例中
     var app = new Vue({
         router,
+        methods: {
+            onClick() {
+                this.$router.push({
+                    path: "/js",
+                    query: {
+                        name: "javascript",
+                    },
+                });
+            },
+        },
     }).$mount("#app");
 </script>
