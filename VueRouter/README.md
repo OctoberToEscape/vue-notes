@@ -330,3 +330,60 @@ const router = new VueRouter({
     当前路径名字
 
 **`$router` 是“路由实例”对象，即使用 new VueRouter 创建的实例，包括了路由的跳转方法，钩子函数等。**
+
+---
+
+## 多层嵌套路由
+
+多级路由嵌套 router 用到 `children` 字段，html 布局用到`<<router-view></router-view>>`
+
+```html
+<!-- 多层嵌套路由 -->
+<router-link to="/floor1">我在第一层</router-link>
+```
+
+```js
+//第一层 <router-view></router-view>
+var floor1 = Vue.extend({
+    template: `<div style="width:100px;height:50px;">
+            <span>{{title}}</span>
+            <router-link to="/floor1/floor2">二楼</router-link>
+            <router-view></router-view>
+        </div>`,
+    data() {
+        return {
+            title: "一楼",
+        };
+    },
+});
+
+var floor2 = Vue.extend({
+    template: `<div style="width:100px;height:50px;">
+            <span>{{title}}</span>
+        </div>`,
+    data() {
+        return {
+            title: "二楼",
+        };
+    },
+});
+
+const routes = [
+    {
+        path: "/floor1",
+        component: floor1,
+        children: [
+            // floor2 会被渲染在 floor1 的 <router-view> 中
+            {
+                //这里的path不加 '/'
+                path: "floor2",
+                component: floor2,
+            },
+        ],
+    },
+];
+
+var app = new Vue({
+    router,
+}).$mount("#app");
+```

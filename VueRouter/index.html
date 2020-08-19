@@ -26,6 +26,9 @@
 
                 <!-- 命名路由 -->
                 <span @click="_onClick">命名路由跳转</span>
+
+                <!-- 多层嵌套路由 -->
+                <router-link to="/floor1">我在第一层</router-link>
             </p>
 
             <router-view style="margin-top: 20px;"></router-view>
@@ -90,6 +93,30 @@
         },
     });
 
+    var floor1 = Vue.extend({
+        template: `<div style="width:100px;height:50px;">
+            <span>{{title}}</span>
+            <router-link to="/floor1/floor2">二楼</router-link>
+            <router-view></router-view>
+        </div>`,
+        data() {
+            return {
+                title: "一楼",
+            };
+        },
+    });
+
+    var floor2 = Vue.extend({
+        template: `<div style="width:100px;height:50px;">
+            <span>{{title}}</span>
+        </div>`,
+        data() {
+            return {
+                title: "二楼",
+            };
+        },
+    });
+
     // 声明路由规则
     const routes = [
         { path: "/", component: Main },
@@ -97,6 +124,17 @@
         { path: "/mine", component: Mine },
         { path: "/js", component: JavaScript },
         { path: "/Name", component: routerName, name: "routerName" },
+        {
+            path: "/floor1",
+            component: floor1,
+            children: [
+                // floor2 会被渲染在 floor1 的 <router-view> 中
+                {
+                    path: "floor2",
+                    component: floor2,
+                },
+            ],
+        },
     ];
 
     // 创建VueRouter实例
