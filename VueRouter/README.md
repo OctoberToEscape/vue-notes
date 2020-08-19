@@ -387,3 +387,59 @@ var app = new Vue({
     router,
 }).$mount("#app");
 ```
+
+---
+
+## 路由的重定向
+
+在定义路由的时候，可以通过添加`redirect`参数，重定向到另外一个页面。应用场景：比如一个二级路由，你点击以及路由的时候你要默认展示二级路由的首页
+
+```js
+var router = new VueRouter({
+    routes: [
+        {
+            path: "/study",
+            component: study,
+            // 用redirect重定向到chinese  ，相当于你进了study这个路由就默认展示了chinese这个子路由
+            redirect: "/study/chinese",
+            children: [
+                {
+                    path: "/study/chinese",
+                    component: chinese,
+                },
+                {
+                    path: "/study/english",
+                    component: english,
+                },
+            ],
+        },
+    ],
+});
+```
+
+---
+
+## 路由的别名
+
+在定义路由的时候，可以通过添加`alias`参数，表示该 url 的别名，以后也可以通过这个别名来访问到这个组件。
+
+```js
+var router = new VueRouter({
+    routes: [
+        {
+            path: "/",
+            component: home,
+            alias: "/home",
+        },
+    ],
+});
+
+//跳转路由的时候
+
+this.$router.push({ path: "/" }); //等同于下面的
+this.$router.push({ path: "/home" });
+```
+
+---
+
+## 路由守卫
