@@ -451,7 +451,7 @@ this.$router.push({ path: "/home" });
 
 -   路由独享守卫：`beforeEnter`
 
--   组内路由守卫：
+-   组件内路由守卫：
 
     `beforeRouteEnter`
 
@@ -542,5 +542,82 @@ router.beforeEach((to, from, next) => {
             next();
         }
     }
+});
+```
+
+### 后置守卫`afterEach`
+
+和 全局守卫`beforeEach` 不同的是 `afterEach` 不接收第三个参数 `next` 函数，也**不会改变导航本身**
+
+```js
+router.afterEach((to, from) => {
+    //这里没有next()
+    //doing
+});
+```
+
+### 全局解析守卫`beforeResolve`
+
+用的不是很多
+
+```js
+router.beforeResolve((to, from, next) => {
+    console.log("解析");
+    //doing
+});
+```
+
+### 路由独享守卫`beforeEnter`
+
+给某个路由单独使用的，本质上和后面的组件内钩子是一样的。都是特指的某个路由。不同的是，这里的一般定义在 router 当中，而不是在组件内
+
+```js
+var router = new VueRouter({
+    routes: [
+        {
+            path: "/dashboard",
+            component: dashboard,
+            // 共给这个路由独享的守卫
+            beforeEnter: (to, from, next) => {
+                //doing
+            },
+            beforeLeave: (to, from, next) => {
+                //doing
+            },
+        },
+    ],
+});
+```
+
+### 组件内路由守卫
+
+用于组件内部的钩子,于其他不同的是，这个是写到组件里的，跟 methods 同级
+
+```js
+var app = new Vue({
+    el: "#app",
+    data() {
+        return {
+            title: "hello",
+        };
+    },
+    beforeRouteEnter(to, from, next) {
+        console.log("todo before enter");
+        console.log(this); // 这里获取不到上下文 指的是windows
+        next((vm) => {
+            // next里面有一个回到函数可以获取到上下文，把请求到的数据塞到vue对象中
+            console.log(vm); // vue实例化的对象
+        });
+    },
+    //  同一个组件，param不同的是触发,常用与同一个组件当传入不通参数时，展示不同的数据
+    beforeRouteUpdate(to, from, next) {
+        console.log("todo update enter");
+        next();
+    },
+    //  该组件离开跳转到另外的组件时触发该钩子,常应用于用户表单，当用户填了一部分内容，需要提醒用户是否离开页面
+    beforeRouteLeave(to, from, next) {
+        console.log("todo leave enter");
+        next();
+    },
 });
 ```
