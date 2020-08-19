@@ -201,3 +201,132 @@ var app = new Vue({
 -   `this.$router.go(数值)` 常用于前进后退
 
 -   `this.$router.replace()` `push` 方法会向 history 栈添加一个新的记录，而 `replace`方法是替换当前的页面，常用于做 404 页面 或者 token 实效替换到登录页面
+
+---
+
+## 路由命名
+
+在路由映射表中添加属性 name，用以对该路由映射规则命名，在编程式导航跳转路由时可以用 router.push({name: '名称'})
+
+```html
+<!-- 命名路由 -->
+<span @click="_onClick">命名路由跳转</span>
+```
+
+```js
+var routerName = Vue.extend({
+    template: `<div style="width:100px;height:50px;">
+            <span>{{title}}</span>
+        </div>`,
+    data() {
+        return {
+            title: "命名路由跳转",
+        };
+    },
+});
+
+// 这里要加一个name属性代表他的命名
+const routes = [{ path: "/Name", component: routerName, name: "routerName" }];
+
+//跳转
+var app = new Vue({
+    router,
+    methods: {
+        _onClick() {
+            this.$router.push({
+                name: "routerName",
+            });
+        },
+    },
+}).$mount("#app");
+```
+
+## 重复点击相同路由报错
+
+我们在当前路由的时候，**用编程式路由跳转**又点击了当前路由会造成如下方图片的报错,虽然不会对逻辑造成错误，但是影响美观
+
+![img4.png](https://i.loli.net/2020/08/19/W7rimdR3HcwpgfU.png)
+
+解决方案，加上下方代码就不会出现此类问题
+
+```js
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch((err) => err);
+};
+```
+
+## 路由的模式
+
+vue 路由有两种模式，分别是 hash 和 history
+
+### Hash 模式
+
+vue-router 默认 hash 模式 —— 使用 URL 的 hash 来模拟一个完整的 URL，于是当 URL 改变时，页面不会重新加载。 hash（#）是 URL 的锚点，代表的是网页中的一个位置，单单改变#后的部分，浏览器只会滚动到相应位置，不会重新加载网页，也就是说 hash 出现在 URL 中，但不会被包含在 http 请求中，对后端完全没有影响，因此改变 hash 不会重新加载页面；同时每一次改变#后的部分，都会在浏览器的访问历史中增加一个记录，使用”后退”按钮，就可以回到上一个位置；所以说 Hash 模式通过锚点值的改变，根据不同的值，渲染指定 DOM 位置的不同数据。hash 模式的原理是 onhashchange 事件(监测 hash 值变化)，可以在 window 对象上监听这个事件。链接会有#号跟随最后
+
+![img5.jpg](https://i.loli.net/2020/08/19/WEP2idjFUw1XDfg.jpg)
+
+### History 模式
+
+由于 hash 模式会在 url 中自带#，如果不想要很丑的 hash，我们可以用路由的 history 模式，只需要在配置路由规则时，加入"mode: 'history'",这种模式充分利用了 html5 history interface 中新增的 pushState() 和 replaceState() 方法。这两个方法应用于浏览器记录栈，在当前已有的 back、forward、go 基础之上，它们提供了对历史记录修改的功能。只是当它们执行修改时，虽然改变了当前的 URL ，但浏览器不会立即向后端发送请求。
+
+设置方法
+
+```js
+const router = new VueRouter({
+    mode: "history",
+    routes,
+});
+```
+
+---
+
+## $router 和 $route 的区别
+
+我们先打印一下这两个东西分别是什么
+
+-   `$router`
+
+    ![img6.jpg](https://i.loli.net/2020/08/19/AgEmt7L8YUcehW2.jpg)
+
+-   `$route`
+
+    ![img7.jpg](https://i.loli.net/2020/08/19/2F69X3acYuNpLPl.jpg)
+
+我们可以看到
+
+**`$route` 是“路由信息对象”，包括 path，params，hash，query，fullPath，matched，name 等路由信息参数。**
+
+-   `$route.path`
+
+    字符串，对应当前路由的路径，总是解析为绝对路径，如 "/about"。
+
+-   `$route.params`
+
+    一个 key/value 对象，包含了 动态片段 和 全匹配片段，如果没有路由参数，就是一个空对象。
+
+-   `$route.query`
+
+    一个 key/value 对象，表示 URL 查询参数。
+
+    例如，对于路径 /user?id=1，则有 `$route.query.id` 为 1，
+
+    如果没有查询参数，则是个空对象。
+
+-   `$route.hash`
+
+    当前路由的 hash 值 (不带 #) ，如果没有 hash 值，则为空字符串。
+
+-   `$route.fullPath`
+
+    完成解析后的 URL，包含查询参数和 hash 的完整路径。
+
+-   `$route.matched`
+
+    数组，包含当前匹配的路径中所包含的所有片段所对应的配置参数对象。
+
+-   `$route.name`
+
+    当前路径名字
+
+**`$router` 是“路由实例”对象，即使用 new VueRouter 创建的实例，包括了路由的跳转方法，钩子函数等。**

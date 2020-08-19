@@ -24,10 +24,10 @@ Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方�
 
 -   [vue 组件](https://github.com/OctoberToEscape/vue-notes/tree/master/Vue-Component)
 
--   [Vue-Cli](https://github.com/OctoberToEscape/vue-notes/tree/master/Vue-Cli)
-
 -   [vue 路由](https://github.com/OctoberToEscape/vue-notes/tree/master/VueRouter)
 
 -   [Vuex](https://github.com/OctoberToEscape/vue-notes/tree/master/Vuex)
+
+-   [Vue-Cli](https://github.com/OctoberToEscape/vue-notes/tree/master/Vue-Cli)
 
 -   [MVVM 双向数据绑定原理](https://github.com/OctoberToEscape/vue-notes/tree/master/DataBinding)

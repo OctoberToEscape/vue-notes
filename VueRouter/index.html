@@ -23,6 +23,9 @@
 
                 <!-- 编程式导航 -->
                 <span @click="onClick">编程式跳转</span>
+
+                <!-- 命名路由 -->
+                <span @click="_onClick">命名路由跳转</span>
             </p>
 
             <router-view style="margin-top: 20px;"></router-view>
@@ -76,12 +79,24 @@
         },
     });
 
+    var routerName = Vue.extend({
+        template: `<div style="width:100px;height:50px;">
+            <span>{{title}}</span>
+        </div>`,
+        data() {
+            return {
+                title: "命名路由跳转",
+            };
+        },
+    });
+
     // 声明路由规则
     const routes = [
         { path: "/", component: Main },
         { path: "/about/:id", component: About },
         { path: "/mine", component: Mine },
         { path: "/js", component: JavaScript },
+        { path: "/Name", component: routerName, name: "routerName" },
     ];
 
     // 创建VueRouter实例
@@ -89,9 +104,18 @@
         routes,
     });
 
+    const originalPush = VueRouter.prototype.push;
+    VueRouter.prototype.push = function push(location) {
+        return originalPush.call(this, location).catch((err) => err);
+    };
+
     // 将创建的VueRouter实例传入创建的Vue实例中
     var app = new Vue({
         router,
+        mounted() {
+            console.log(this.$route);
+            console.log(this.$router);
+        },
         methods: {
             onClick() {
                 this.$router.push({
@@ -99,6 +123,11 @@
                     query: {
                         name: "javascript",
                     },
+                });
+            },
+            _onClick() {
+                this.$router.push({
+                    name: "routerName",
                 });
             },
         },
