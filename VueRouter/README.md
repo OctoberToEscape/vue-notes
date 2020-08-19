@@ -398,18 +398,15 @@ var app = new Vue({
 var router = new VueRouter({
     routes: [
         {
-            path: "/study",
+            path: "/student",
             component: study,
-            // 用redirect重定向到chinese  ，相当于你进了study这个路由就默认展示了chinese这个子路由
-            redirect: "/study/chinese",
+            //利用redirect重定向，进到student路由就重定向到了student下的index路由
+            redirect: "/student/index",
             children: [
                 {
-                    path: "/study/chinese",
-                    component: chinese,
-                },
-                {
-                    path: "/study/english",
-                    component: english,
+                    path: "index",
+                    component: index,
+                    name: "student",
                 },
             ],
         },
@@ -443,3 +440,107 @@ this.$router.push({ path: "/home" });
 ---
 
 ## 路由守卫
+
+**_类别_**
+
+-   全局守卫：`beforeEach`
+
+-   后置守卫：`afterEach`
+
+-   全局解析守卫：`beforeResolve`
+
+-   路由独享守卫：`beforeEnter`
+
+-   组内路由守卫：
+
+    `beforeRouteEnter`
+
+    `beforeRouteUpdate`
+
+    `beforeRouteLeave`
+
+<br />
+
+**_路由导航解析流程:_**
+
+路由导航开始
+
+在当前路由调用 `beforeRouterLeave`
+
+调用 `beforeEach`
+
+在重用组件中调用 `beforeRouteUpdate`
+
+调用 `beforeEnter`
+
+解析异步路由组件
+
+在被激活的路由组件里调用 `beforeRouteEnter`
+
+调用 `beforeResolve`
+
+导航被确认
+
+调用全局的 `afterEach`
+
+触发 DOM 更新
+
+用创建好的实例调用 `beforeRouteEnter` 中传递给 `next` 的函数
+
+<br />
+
+### 全局守卫 `beforeEach`
+
+常用于全局的 token 登录判断，比如在一个后台管理系统中，token 实效了，还有权限问题会常用到
+
+```js
+router.beforeEach((to, from, next) => {
+    // doing
+});
+```
+
+**_参数解析_**
+
+-   to: 即将要**进入**的目标路由对象
+
+-   from: 当前导航正要**离开**的路由
+
+-   next:: **一定要调用该方法**来 resolve 这个钩子。执行效果依赖 next 方法的调用参数。
+
+-   next():直接进 to 所指路由
+
+-   next(false) :中断当前路由
+
+-   next('routename') :跳转指定路由
+
+-   next('error') :跳转错误路由
+
+<br />
+
+给大家写一个全局判断 token 的例子：
+
+```js
+router.beforeEach((to, from, next) => {
+    if (
+        //如果我要去登录，注册，修改密码，服务协议等页面
+        to.path === "/login" ||
+        to.name === "register" ||
+        to.name === "changePassword" ||
+        to.name === "clause"
+    ) {
+        // 通行让他去
+        next();
+    } else {
+        // 否则其他页面
+        let token = localStorage.getItem("Authorization");
+        // token如果是null或者是空
+        if (token === null || token === "") {
+            // 让他去指定的登录页面
+            next("/login");
+        } else {
+            // 否则放行
+            next();
+        }
+    }
+});
+```
