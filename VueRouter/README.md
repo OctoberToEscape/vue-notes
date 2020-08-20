@@ -621,3 +621,73 @@ var app = new Vue({
     },
 });
 ```
+
+---
+
+## 路由懒加载
+
+在单页应用中，如果没有应用懒加载，运用 webpack 打包后的文件将会异常的大，造成进入首页时，需要加载的内容过多，延时过长，不利于用户体验，运用懒加载可以将页面进行划分，按需加载页面，可以分担首页所承担的加载压力，减少加载用时。
+
+```js
+//正常路由
+const routes = [
+    { path: "/", component: "路径1" },
+    { path: "/about", component: "路径2" },
+    { path: "/mine", component: "路径3" },
+];
+```
+
+-   1.使用 vue 的异步组件技术，可以实现按需加载，`resolve => require([URL], resolve)`
+
+    **_但是，这种情况下 ，一个组件生成一个 js 文件。_**
+
+    ```js
+    // 写法
+    const routes = [
+        { path: "/", component: (resolve) => require(["路径1"], resolve) },
+        { path: "/about", component: (resolve) => require(["路径2"], resolve) },
+        { path: "/mine", component: (resolve) => require(["路径3"], resolve) },
+    ];
+    ```
+
+-   2.vue-router 配置路由，使用 webpack 的 require.ensure 技术，也可以实现按需加载。 `resolve => require.ensure([ ], ()=>{resolve(require())})`
+
+    这种情况下，多个路由指定相同的 chunkName，会合并打包成一个 js 文件。
+
+    ```js
+    //写法
+    const routes = [
+        {
+            path: "/",
+            component: (resolve) =>
+                require.ensure(["路径1"], () => {
+                    resolve(require("路径1"));
+                }),
+        },
+        {
+            path: "/about",
+            component: (resolve) =>
+                require.ensure(["路径3"], () => {
+                    resolve(require("路径2"));
+                }),
+        },
+        {
+            path: "/mine",
+            component: (resolve) =>
+                require.ensure(["路径3"], () => {
+                    resolve(require("路径3"));
+                }),
+        },
+    ];
+    ```
+
+-   3.推荐使用这种方式(需要 webpack > 2.4)。`() => import(URL)`
+
+    ```js
+    //写法
+    const routes = [
+        { path: "/", component: () => import("路径1") },
+        { path: "/about", component: () => import("路径2") },
+        { path: "/mine", component: () => import("路径3") },
+    ];
+    ```

@@ -31,7 +31,7 @@ Object.defineProperty(data, "value", {
 ### vue3.0 原理
 
 ```html
-<div class="vue2.0">
+<div class="vue3.0">
     <h3>vue3.0</h3>
     <span class="span2"></span><br />
     <input type="text" oninput="changeValues(this.value)" />
