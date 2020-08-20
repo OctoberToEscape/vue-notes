@@ -33,6 +33,10 @@
                 state.count -= val ? val.num : 1;
             },
             MULTIPLICATION_COUNT: (state, val) => {
+                if (state.count === 0) {
+                    alert("0 * 任何数都是0");
+                    return false;
+                }
                 state.count *= val.num;
             },
             CHANGE_PERSON: (state) => {
@@ -67,13 +71,14 @@
         components: {
             page1: {
                 template: `<div>
+                                <h1>组件1</h1>
                                 <p>{{val}}</p>
                                 <p>日期：{{weekDate}}</p>
                                 <p>{{person}}</p>
                                 <button @click="handleAdd">点击加</button>
                                 <button @click="handleReduce">点击减</button>
                                 <button @click="handleMultiplication">点击乘</button>
-                                <button @click="addSex">点击加性别</button>
+                                <button @click="addSex">点击加性别改年龄</button>
                             </div>
                         `,
                 computed: {
@@ -92,18 +97,19 @@
                         store.commit("ADD_COUNT", { num: 10 });
                     },
                     handleReduce() {
-                        store.commit("REDUCE_COUNT", { num: 2 });
+                        store.commit("REDUCE_COUNT", { num: 14 });
                     },
                     addSex() {
                         store.commit("CHANGE_PERSON");
                     },
                     handleMultiplication() {
-                        store.dispatch("MULTIPLICATION_COUNT", { num: 3.2 });
+                        store.dispatch("MULTIPLICATION_COUNT", { num: 3 });
                     },
                 },
             },
             page2: {
                 template: `<div>
+                                <h1>组件2</h1>
                                 <p>{{val}}</p>
                                 <p>日期：{{weekDate}}</p>
                                 <button @click="handleAdd">点击加</button>
