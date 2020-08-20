@@ -1,8 +1,6 @@
-# 一些 vue 的学习过程
+# vue 的双向数据绑定原理绑定原理
 
-## vue 的双向数据绑定原理绑定原理
-
-### vue2.0 原理
+## vue2.0 原理
 
 ```html
 <div class="vue2.0">
@@ -28,7 +26,7 @@ Object.defineProperty(data, "value", {
 });
 ```
 
-### vue3.0 原理
+## vue3.0 原理
 
 ```html
 <div class="vue3.0">

@@ -652,7 +652,7 @@ const routes = [
 
 -   2.vue-router 配置路由，使用 webpack 的 require.ensure 技术，也可以实现按需加载。 `resolve => require.ensure([ ], ()=>{resolve(require())})`
 
-    这种情况下，多个路由指定相同的 chunkName，会合并打包成一个 js 文件。
+    **_这种情况下，多个路由指定相同的 chunkName，会合并打包成一个 js 文件。_**
 
     ```js
     //写法
