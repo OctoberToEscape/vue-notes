@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>vuex</title>
+    </head>
+    <body>
+        <div id="app">
+            <page1></page1>
+            <page2></page2>
+        </div>
+    </body>
+</html>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vuex@3.0.1/dist/vuex.js"></script>
+<script src="http://cdn.staticfile.org/moment.js/2.24.0/moment.js"></script>
+<script>
+    const store = new Vuex.Store({
+        state: {
+            count: 0,
+            date: new Date(),
+            person: {
+                name: "heqi",
+                age: 24,
+            },
+        },
+        mutations: {
+            ADD_COUNT: (state, val) => {
+                state.count += val.num;
+            },
+            REDUCE_COUNT: (state, val) => {
+                state.count -= val ? val.num : 1;
+            },
+            MULTIPLICATION_COUNT: (state, val) => {
+                state.count *= val.num;
+            },
+            CHANGE_PERSON: (state) => {
+                // 添加新属性
+                Vue.set(state.person, "sex", "男");
+                // 或者 state.person = { ...state.person, sex: "男" };
+
+                // 改变原有属性
+                state.person.age = 100;
+            },
+        },
+        getters: {
+            weekDate: (state) => (fm) => {
+                return moment(state.date).format(fm ? fm : "dddd");
+            },
+            weekLength: (state, getters) => {
+                return getters.weekDate.length;
+            },
+        },
+        actions: {
+            MULTIPLICATION_COUNT: ({ commit }, val) => {
+                // 可执行异步操作
+                setTimeout(() => {
+                    commit("MULTIPLICATION_COUNT", val);
+                }, 1000);
+            },
+        },
+    });
+
+    var app = new Vue({
+        el: "#app",
+        components: {
+            page1: {
+                template: `<div>
+                                <p>{{val}}</p>
+                                <p>日期：{{weekDate}}</p>
+                                <p>{{person}}</p>
+                                <button @click="handleAdd">点击加</button>
+                                <button @click="handleReduce">点击减</button>
+                                <button @click="handleMultiplication">点击乘</button>
+                                <button @click="addSex">点击加性别</button>
+                            </div>
+                        `,
+                computed: {
+                    val() {
+                        return store.state.count;
+                    },
+                    weekDate() {
+                        return store.getters.weekDate();
+                    },
+                    person() {
+                        return store.state.person;
+                    },
+                },
+                methods: {
+                    handleAdd() {
+                        store.commit("ADD_COUNT", { num: 10 });
+                    },
+                    handleReduce() {
+                        store.commit("REDUCE_COUNT", { num: 2 });
+                    },
+                    addSex() {
+                        store.commit("CHANGE_PERSON");
+                    },
+                    handleMultiplication() {
+                        store.dispatch("MULTIPLICATION_COUNT", { num: 3.2 });
+                    },
+                },
+            },
+            page2: {
+                template: `<div>
+                                <p>{{val}}</p>
+                                <p>日期：{{weekDate}}</p>
+                                <button @click="handleAdd">点击加</button>
+                                <button @click="handleReduce">点击减</button>
+                            </div>
+                        `,
+                computed: {
+                    val() {
+                        return store.state.count;
+                    },
+                    weekDate() {
+                        return store.getters.weekDate("MM Do YY");
+                    },
+                },
+                methods: {
+                    handleAdd() {
+                        store.commit("ADD_COUNT", { num: 3 });
+                    },
+                    handleReduce() {
+                        store.commit("REDUCE_COUNT");
+                    },
+                },
+            },
+        },
+    });
+</script>

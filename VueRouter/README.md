@@ -19,8 +19,6 @@
         <router-link to="/">主页</router-link>
         <router-link to="/about">关于我们</router-link>
         <router-link to="/mine">我的</router-link>
-
-        <!-- 编程式导航 -->
     </p>
     <!-- 路由出口 -->
     <!-- 路由匹配到的组件将渲染在这里 -->
