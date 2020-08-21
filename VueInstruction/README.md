@@ -30,7 +30,7 @@
   <tr><td>v-show</td><td>boolean</td><td><!--v-show-->
 
 ```html
-<!--show 的值会直接影响 div 在文档中是否显示(存在,改变样式让他隐藏而已)-->
+<!--v-show 的值会直接影响 div 在文档中是否显示(存在,改变样式让他隐藏而已)-->
 <div v-show="show"></div>
 ```
 
@@ -38,7 +38,7 @@
     <tr><td>v-if</td><td>boolean</td><td><!--v-if-->
       
   ``` html
-    <!--status 的值会直接影响 div 在文档中是否存在(创建和删除节点)-->
+    <!--v-if 的值会直接影响 div 在文档中是否存在(创建和删除节点)-->
     <div v-if="delete"></div>
   ```
   

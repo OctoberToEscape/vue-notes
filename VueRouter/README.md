@@ -333,7 +333,7 @@ const router = new VueRouter({
 
 ## 多层嵌套路由
 
-多级路由嵌套 router 用到 `children` 字段，html 布局用到`<<router-view></router-view>>`
+多级路由嵌套 router 用到 `children` 字段，html 布局用到`<router-view></router-view>`
 
 ```html
 <!-- 多层嵌套路由 -->
@@ -489,7 +489,7 @@ this.$router.push({ path: "/home" });
 
 ### 全局守卫 `beforeEach`
 
-常用于全局的 token 登录判断，比如在一个后台管理系统中，token 实效了，还有权限问题会常用到
+常用于全局的 token 登录判断，比如在一个后台管理系统中，token 失效了，还有权限问题会常用到
 
 ```js
 router.beforeEach((to, from, next) => {
