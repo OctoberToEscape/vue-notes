@@ -393,3 +393,160 @@ new Vue({
 ---
 
 ## vuex 的辅助函数
+
+### mapState
+
+mapState 工具函数会将 store 中的 state 映射到局部计算属性中。
+
+```js
+// 想获得store里的某个属性
+var app = new Vue({
+    el: "#app",
+    computed: {
+        // 常规写法
+        val() {
+            return store.state.count;
+        },
+        // 运用辅助函数写法
+
+        // 写法1
+        // 映射 this.count 到 this.$store.state.count
+        ...Vuex.mapState(["count"]), //这里的模版 <div>{{count}}</div>
+        // 写法2
+        ...Vuex.mapState({
+            val: (state) => state.count, //这里的模版 <div>{{val}}</div>
+        }),
+        // 写法三
+        // 这里的 count 等同于 (state) => state.count
+        ...Vuex.mapState({
+            num: "count", //这里的模版 <div>{{num}}</div>
+        }),
+    },
+});
+```
+
+### mapGetters
+
+mapGetters 工具函数会将 store 中的 getter 映射到局部计算属性中,他和 mapState 很相似
+
+getters 中的方法
+
+```js
+const store = new Vuex.Store({
+    state: {
+        person: {
+            name: "heqi",
+            age: 24,
+        },
+    },
+    getters: {
+        getPerson: (state) => {
+            return state.person;
+        },
+    },
+});
+```
+
+```js
+var app = new Vue({
+    el: "#app",
+    store,
+    components: {
+        page1: {
+            template: `<div>
+                            <h1>组件1</h1>
+                            <p>{{val}}</p>
+                            <p>{{person}}</p>
+                        </div>
+                    `,
+            computed: {
+                // 常规写法
+                person() {
+                    return store.state.person;
+                },
+                // 使用辅助函数写法
+                // 方法一
+                ...Vuex.mapGetters(["getPerson"]) //这里的模版 <div>{{getPerson}}</div>
+                // 方法2
+                ...Vuex.mapGetters({
+                    person: "getPerson", //这里的模版 <div>{{person}}</div>
+                }),
+            },
+        },
+    },
+});
+```
+
+### mapMutations
+
+mapMutations 是 vuex 的 mutation 的辅助函数，用于在组件中映射 mutation 内的方法，以便在该组件中直接使用 mutation 里的方法 (说白了，就是一语法糖)
+
+```js
+var app = new Vue({
+    el: "#app",
+    store,
+    components: {
+        page1: {
+            template: `<div>
+                            <h1>组件1</h1>
+                            <p>{{val}}</p>
+                            <button @click="handleAdd">点击加</button>
+                        </div>
+                    `,
+            computed: {
+                ...Vuex.mapState({
+                    val: (state) => state.count,
+                }),
+            },
+            methods: {
+                // 第一步通过...mapMutations([方法名])讲方法引入
+                ...Vuex.mapMutations(["ADD_COUNT"]),
+                handleAdd() {
+                    // 辅助方法调取此方法，穿参则在 方法后(参数)
+                    this.ADD_COUNT({ num: 10 });
+                    // 常规方法
+                    store.commit("ADD_COUNT", { num: 10 });
+                },
+            },
+        },
+    },
+});
+```
+
+### mapActions
+
+mapActions 工具函数会将 store 中的 dispatch 方法映射到组件的 methods 中。和 mapGetters 也类似。
+
+```js
+var app = new Vue({
+    el: "#app",
+    store,
+    components: {
+        page1: {
+            template: `<div>
+                            <h1>组件1</h1>
+                            <p>{{val}}</p>
+                            <button @click="handleMultiplication">点击乘</button>
+                        </div>
+                    `,
+            computed: {
+                ...Vuex.mapState({
+                    val: (state) => state.count,
+                }),
+            },
+            methods: {
+                // 第一步通过...mapActions([方法名])讲方法引入
+                ...Vuex.mapActions(["MULTIPLICATION_COUNT"]),
+                handleMultiplication() {
+                    // 辅助方法调取此方法，穿参则在 方法后(参数)
+                    this.MULTIPLICATION_COUNT({ num: 4 });
+                    // 常规写法
+                    store.dispatch("MULTIPLICATION_COUNT", { num: 3 });
+                },
+            },
+        },
+    },
+});
+```
+
+[代码源码体验地址](https://github.com/OctoberToEscape/vue-notes/tree/master/Vuex/index.html)

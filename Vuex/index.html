@@ -55,6 +55,9 @@
             weekLength: (state, getters) => {
                 return getters.weekDate.length;
             },
+            getPerson: (state) => {
+                return state.person;
+            },
         },
         actions: {
             MULTIPLICATION_COUNT: ({ commit }, val) => {
@@ -83,19 +86,29 @@
                             </div>
                         `,
                 computed: {
-                    val() {
-                        return store.state.count;
-                    },
+                    ...Vuex.mapState({
+                        val: (state) => state.count,
+                    }),
+                    // val() {
+                    //     return store.state.count;
+                    // },
+
                     weekDate() {
                         return store.getters.weekDate();
                     },
-                    person() {
-                        return store.state.person;
-                    },
+
+                    // person() {
+                    //     return store.state.person;
+                    // },
+                    ...Vuex.mapGetters({
+                        person: "getPerson",
+                    }),
                 },
                 methods: {
+                    ...Vuex.mapMutations(["ADD_COUNT"]),
                     handleAdd() {
-                        store.commit("ADD_COUNT", { num: 10 });
+                        this.ADD_COUNT({ num: 10 });
+                        // store.commit("ADD_COUNT", { num: 10 });
                     },
                     handleReduce() {
                         store.commit("REDUCE_COUNT", { num: 14 });
@@ -103,8 +116,10 @@
                     addSex() {
                         store.commit("CHANGE_PERSON");
                     },
+                    ...Vuex.mapActions(["MULTIPLICATION_COUNT"]),
                     handleMultiplication() {
-                        store.dispatch("MULTIPLICATION_COUNT", { num: 3 });
+                        this.MULTIPLICATION_COUNT({ num: 4 });
+                        // store.dispatch("MULTIPLICATION_COUNT", { num: 3 });
                     },
                 },
             },
